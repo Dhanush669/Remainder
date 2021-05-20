@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:elevation="3dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Events"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="10dp" />
+    </androidx.cardview.widget.CardView>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Month"
+        android:textColor="#FF0000"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:id="@+id/month"
+        android:visibility="gone"
+        android:layout_margin="10dp"
+        >
+    </TextView>
+    <com.github.sundeepk.compactcalendarview.CompactCalendarView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/compactcalendar_view"
+        android:layout_width="fill_parent"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:visibility="gone"
+        android:layout_height="250dp"
+        app:compactCalendarEventIndicatorStyle="fill_large_indicator"
+        app:compactCalendarTargetHeight="250dp"
+        app:compactCalendarTextSize="12sp"
+        app:compactCalendarBackgroundColor="#FFFFFF"
+        app:compactCalendarTextColor="#000000"
+        app:compactCalendarCurrentSelectedDayBackgroundColor="#02E2FF"
+        app:compactCalendarCurrentDayBackgroundColor="#B71C1C"
+        app:compactCalendarMultiEventIndicatorColor="#8BC34A"
+        />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        tools:listitem="@layout/eventlayout"
+        android:id="@+id/recyclerview"/>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/ic_baseline_add_24"
+        android:layout_margin="16dp"
+        app:tint="@null"
+        android:backgroundTint="#C9FBCB"
+        android:onClick="openAdd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
+</LinearLayout>

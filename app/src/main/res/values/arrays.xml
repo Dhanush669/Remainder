@@ -1,0 +1,12 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="reply_entries">
+        <item>Calendar View</item>
+        <item>Card View</item>
+    </string-array>
+
+    <string-array name="reply_values">
+        <item>calendar_view</item>
+        <item>card_view</item>
+    </string-array>
+</resources>
