@@ -2,6 +2,7 @@ package com.devgd.calanderapp;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -30,6 +32,7 @@ import android.widget.TextView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     Calendar calendar;
     RecyclerView recyclerView;
     int lisize=0;
+    List<event> eventList;
+    List<Event> cevents;
     List<String> dates;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         month=findViewById(R.id.month);
+        cevents=new ArrayList<>();
         final Adapter adapter = new Adapter(this);
         recyclerView.setAdapter(adapter);
 
@@ -84,10 +90,11 @@ public class MainActivity extends AppCompatActivity {
         taskViewModel.getAllevents().observe(this, new Observer<List<event>>() {
             @Override
             public void onChanged(List<event> events) {
-
+                eventList=new ArrayList<>();
+                eventList=events;
                 adapter.setTask(events);
                 lisize = events.size();
-                List<Event> cevents;
+
                 cevents=new ArrayList<>();
                 dates=new ArrayList<>();
 
@@ -160,6 +167,41 @@ public class MainActivity extends AppCompatActivity {
 
                 if(dates.contains(d)){
                     int index = dates.indexOf(d);
+                    event cevent=eventList.get(index);
+
+                    AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle(cevent.getEvent());
+                    Calendar calendar;
+                    calendar=Calendar.getInstance();
+                    calendar.set(cevent.getYear(),cevent.getMonth(),cevent.getDay());
+                    builder.setMessage("Remainder for the Task \n"+String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))
+                    +" / "+String.valueOf(calendar.get(Calendar.MONTH))+" / "+String.valueOf(calendar.get(Calendar.YEAR)));
+                    builder.setNegativeButton("Got it!", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                     builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                         @Override
+                         public void onClick(DialogInterface dialogInterface, int i) {
+                             Intent updateintent = new Intent(getApplicationContext(), Addevent.class);
+                             updateintent.putExtra("event", cevent.getEvent());
+                             updateintent.putExtra("date", "click to update");
+                             updateintent.putExtra("priority", cevent.getPriority());
+                             updateintent.putExtra("category", cevent.getCategory());
+                             updateintent.putExtra("sound", cevent.getRing());
+
+                             updateintent.putExtra("id", cevent.getId());
+                             updateintent.putExtra("year", cevent.getYear());
+                             updateintent.putExtra("month", cevent.getMonth());
+                             updateintent.putExtra("day", cevent.getDay());
+
+                             startActivityForResult(updateintent,UPDATE_NOTE_REQUEST);
+                         }
+                     });
+                     AlertDialog alertDialog=builder.create();
+                     alertDialog.show();
                 }
                 else {
                     Intent intent = new Intent(MainActivity.this,Addevent.class);
@@ -169,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
-
+                month.setText(new SimpleDateFormat("MMM-yyyy").format(firstDayOfNewMonth));
             }
         });
 
@@ -202,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
             taskViewModel.insert(task);
 
 
-
+            cevents=new ArrayList<>();
             //getting id
 
             int id=lisize+1;
@@ -225,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         else if(requestCode==UPDATE_NOTE_REQUEST && resultCode==RESULT_OK){
+            cevents=new ArrayList<>();
             String event=data.getStringExtra("event");
             String priority=data.getStringExtra("priority");
             String category=data.getStringExtra("category");
@@ -253,6 +296,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void openSetting(MenuItem item) {
+
+    }
+
+    public void openSetting(View view) {
         Intent intent=new Intent(getApplicationContext(),SettingsActivity.class);
         startActivity(intent);
     }
